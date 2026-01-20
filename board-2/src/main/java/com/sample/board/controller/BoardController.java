@@ -3,6 +3,8 @@ package com.sample.board.controller;
 import com.sample.board.dto.APIResponse;
 import com.sample.board.dto.board.BoardCreateRequestDto;
 import com.sample.board.dto.board.BoardDetailResponseDto;
+import com.sample.board.dto.board.BoardListResponseDto;
+import com.sample.board.dto.common.PageResponse;
 import com.sample.board.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,6 +35,16 @@ public class BoardController {
         // TODO: 실제 인증 구현 시 userId를 토큰에서 추출
         String userId = "admin";
         return new APIResponse<>(boardService.createBoard(requestDto, userId));
+    }
+
+    @GetMapping
+    public APIResponse<PageResponse<BoardListResponseDto>> getBoardList(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "20") Integer size
+    ) {
+        log.info("[게시글 목록 조회] 제목: {}, 페이지: {}, 사이즈: {}", title, page, size);
+        return new APIResponse<>(boardService.getBoardList(title, page, size));
     }
 
     @GetMapping("/{board-id}")

@@ -18,4 +18,29 @@
         WHERE board_id = #{boardId} AND use_yn = 'Y'
     </select>
 
+    <sql id="boardSearchConditions">
+        <where>
+            use_yn = 'Y'
+            <if test="title != null and title != ''">
+                AND title LIKE CONCAT('%', #{title}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="findBoardList" resultType="com.sample.board.dto.board.BoardListResponseDto">
+        SELECT board_id, title, create_id, create_date
+        FROM tb_board
+        <include refid="boardSearchConditions"/>
+        ORDER BY create_date DESC
+        <if test="pageInfo != null">
+            LIMIT #{pageInfo.size} OFFSET #{pageInfo.offset}
+        </if>
+    </select>
+
+    <select id="countBoard" resultType="long">
+        SELECT COUNT(*)
+        FROM tb_board
+        <include refid="boardSearchConditions"/>
+    </select>
+
 </mapper>
