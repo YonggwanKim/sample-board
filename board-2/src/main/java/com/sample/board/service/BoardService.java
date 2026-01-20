@@ -58,4 +58,13 @@ public class BoardService {
         boardMapper.updateBoard(board);
         return BoardDetailResponseDto.from(board);
     }
+
+    @Transactional
+    public void deleteBoard(Long boardId, String userId) {
+        int deletedCount = boardMapper.deleteByBoardId(boardId, userId);
+        if (deletedCount == 0) {
+            throw new CNXException(ResponseCode.DATA_NOT_FOUND,
+                    "게시글을 찾을 수 없습니다. ID: " + boardId);
+        }
+    }
 }

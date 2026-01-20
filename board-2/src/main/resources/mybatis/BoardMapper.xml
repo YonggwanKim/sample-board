@@ -53,4 +53,13 @@
         WHERE board_id = #{boardId} AND use_yn = 'Y'
     </update>
 
+    <!-- D -->
+    <update id="deleteByBoardId">
+        UPDATE tb_board
+        SET use_yn = 'N',
+            update_id = #{updateId},
+            update_date = NOW()
+        WHERE board_id = #{boardId} AND use_yn = 'Y'
+    </update>
+
 </mapper>

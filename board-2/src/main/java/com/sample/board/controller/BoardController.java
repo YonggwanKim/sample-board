@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,5 +67,16 @@ public class BoardController {
         // TODO: 실제 인증 구현 시 userId를 토큰에서 추출
         String userId = "admin";
         return new APIResponse<>(boardService.updateBoard(boardId, requestDto, userId));
+    }
+
+    @DeleteMapping("/{board-id}")
+    public APIResponse<Void> deleteBoard(
+            @PathVariable("board-id") Long boardId
+    ) {
+        log.info("[게시글 삭제] ID: {}", boardId);
+        // TODO: 실제 인증 구현 시 userId를 토큰에서 추출
+        String userId = "admin";
+        boardService.deleteBoard(boardId, userId);
+        return new APIResponse<>(null);
     }
 }

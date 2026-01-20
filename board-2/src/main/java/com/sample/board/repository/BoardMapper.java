@@ -25,4 +25,7 @@ public interface BoardMapper {
 
     // U
     void updateBoard(Board board);
+
+    // D
+    int deleteByBoardId(@Param("boardId") Long boardId, @Param("updateId") String updateId);
 }

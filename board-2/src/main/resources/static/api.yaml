@@ -191,6 +191,40 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Board
+      summary: 게시글 삭제
+      description: 게시글 ID로 게시글을 삭제합니다. (논리 삭제)
+      operationId: deleteBoard
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: board-id
+          in: path
+          required: true
+          description: 게시판 ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: 게시글 삭제 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCode'
+              example:
+                code: "00200"
+                message: "success"
+                result: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
