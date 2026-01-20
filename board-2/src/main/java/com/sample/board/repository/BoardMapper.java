@@ -22,4 +22,7 @@ public interface BoardMapper {
                                               @Param("pageInfo") PageInfo pageInfo);
 
     long countBoard(@Param("title") String title);
+
+    // U
+    void updateBoard(Board board);
 }

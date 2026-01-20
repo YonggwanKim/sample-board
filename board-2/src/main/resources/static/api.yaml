@@ -148,6 +148,49 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Board
+      summary: 게시글 수정
+      description: 게시글 ID로 게시글을 수정합니다.
+      operationId: updateBoard
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: board-id
+          in: path
+          required: true
+          description: 게시판 ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BoardUpdateRequest'
+      responses:
+        '200':
+          description: 게시글 수정 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseCode'
+                  - type: object
+                    properties:
+                      result:
+                        $ref: '#/components/schemas/BoardDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
@@ -259,6 +302,23 @@ components:
           description: 요청 데이터
 
     # 게시판 요청 스키마
+    BoardUpdateRequest:
+      type: object
+      description: 게시글 수정 요청
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          description: 게시판 제목
+          example: "수정된 공지사항입니다"
+        content:
+          type: string
+          description: 게시판 내용
+          example: "수정된 게시글 내용입니다."
+
     BoardCreateRequest:
       type: object
       description: 게시글 생성 요청

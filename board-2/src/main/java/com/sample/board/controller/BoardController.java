@@ -4,6 +4,7 @@ import com.sample.board.dto.APIResponse;
 import com.sample.board.dto.board.BoardCreateRequestDto;
 import com.sample.board.dto.board.BoardDetailResponseDto;
 import com.sample.board.dto.board.BoardListResponseDto;
+import com.sample.board.dto.board.BoardUpdateRequestDto;
 import com.sample.board.dto.common.PageResponse;
 import com.sample.board.service.BoardService;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,5 +55,16 @@ public class BoardController {
     ) {
         log.info("[게시글 조회] ID: {}", boardId);
         return new APIResponse<>(boardService.getBoard(boardId));
+    }
+
+    @PutMapping("/{board-id}")
+    public APIResponse<BoardDetailResponseDto> updateBoard(
+            @PathVariable("board-id") Long boardId,
+            @Valid @RequestBody BoardUpdateRequestDto requestDto
+    ) {
+        log.info("[게시글 수정] ID: {}, 제목: {}", boardId, requestDto.getTitle());
+        // TODO: 실제 인증 구현 시 userId를 토큰에서 추출
+        String userId = "admin";
+        return new APIResponse<>(boardService.updateBoard(boardId, requestDto, userId));
     }
 }

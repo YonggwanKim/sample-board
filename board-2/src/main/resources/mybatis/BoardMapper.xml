@@ -43,4 +43,14 @@
         <include refid="boardSearchConditions"/>
     </select>
 
+    <!-- U -->
+    <update id="updateBoard" parameterType="Board">
+        UPDATE tb_board
+        SET title = #{title},
+            content = #{content},
+            update_id = #{updateId},
+            update_date = #{updateDate}
+        WHERE board_id = #{boardId} AND use_yn = 'Y'
+    </update>
+
 </mapper>

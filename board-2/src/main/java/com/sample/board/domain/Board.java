@@ -1,6 +1,7 @@
 package com.sample.board.domain;
 
 import com.sample.board.dto.board.BoardCreateRequestDto;
+import com.sample.board.dto.board.BoardUpdateRequestDto;
 import com.sample.board.type.YNType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +27,11 @@ public class Board extends BaseDomain {
                 .build();
         board.initDomain(userId);
         return board;
+    }
+
+    public void update(BoardUpdateRequestDto dto, String userId) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.updateDomain(userId);
     }
 }
