@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: board
+
+  datasource:
+    url: jdbc:mariadb://${RDB_HOST:localhost}:${RDB_PORT:3306}/${RDB_DATABASE:sampleBoard-2}?characterEncoding=UTF-8&serverTimezone=UTC&allowMultiQueries=true
+    username: ${RDB_USER:root}
+    password: ${RDB_PASSWORD:root}
+
+mybatis:
+  mapper-locations: classpath:mybatis/**/*.xml
+  type-aliases-package: com.sample.board.domain
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.sample.board: INFO
+    org.mybatis: DEBUG

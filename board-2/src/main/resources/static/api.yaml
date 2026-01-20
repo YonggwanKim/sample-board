@@ -1,0 +1,262 @@
+openapi: 3.0.3
+info:
+  title: Sample Board API
+  description: |
+
+    ## 인증
+    모든 API는 Bearer Token 인증이 필요합니다.
+
+    ## 응답 코드 체계
+    - 00200: 성공
+    - 00400: 잘못된 요청
+    - 00401: 인증 실패
+    - 00404: 리소스를 찾을 수 없음
+    - 00409: 중복된 리소스
+    - 00500: 서버 내부 오류
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@sample.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+tags:
+  - name: Board
+    description: 게시판 관리 API
+
+paths:
+  /v1/board:
+    post:
+      tags:
+        - Board
+      summary: 게시글 생성
+      description: 새로운 게시글을 생성합니다.
+      operationId: createBoard
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BoardCreateRequest'
+      responses:
+        '200':
+          description: 게시글 생성 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseCode'
+                  - type: object
+                    properties:
+                      result:
+                        $ref: '#/components/schemas/BoardDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/board/{board-id}:
+    get:
+      tags:
+        - Board
+      summary: 게시글 상세 조회
+      description: 게시글 ID로 상세 정보를 조회합니다.
+      operationId: getBoard
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: board-id
+          in: path
+          required: true
+          description: 게시판 ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: 게시글 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseCode'
+                  - type: object
+                    properties:
+                      result:
+                        $ref: '#/components/schemas/BoardDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Bearer 토큰 인증
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseCode'
+          example:
+            code: "00400"
+            message: "bad request"
+            result: null
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseCode'
+          example:
+            code: "00401"
+            message: "unauthorized"
+            result: null
+    NotFound:
+      description: 리소스를 찾을 수 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseCode'
+          example:
+            code: "00404"
+            message: "not found data"
+            result: null
+    Conflict:
+      description: 중복된 리소스
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseCode'
+          example:
+            code: "00409"
+            message: "conflict data"
+            result: null
+    InternalServerError:
+      description: 서버 내부 오류
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseCode'
+          example:
+            code: "00500"
+            message: "server error"
+            result: null
+
+  schemas:
+    # 공통 응답 스키마
+    ResponseCode:
+      type: object
+      description: API 응답 형식
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: 응답 코드
+          example: "00200"
+        message:
+          type: string
+          description: 응답 메시지
+          example: "success"
+        result:
+          type: object
+          description: 응답 데이터
+          nullable: true
+
+    # 페이징 응답 스키마
+    PageResponse:
+      type: object
+      description: 페이징 처리 목록 응답 형식
+      required:
+        - page
+        - size
+        - totalSize
+      properties:
+        page:
+          type: integer
+          description: 요청 페이지
+          default: 1
+          example: 1
+        size:
+          type: integer
+          description: 한 페이지에 보여줄 요청 데이터 개수
+          default: 20
+          example: 20
+        totalSize:
+          type: integer
+          description: 요청한 데이터의 전체 개수
+          example: 100
+        data:
+          type: array
+          description: 요청 데이터
+
+    # 게시판 요청 스키마
+    BoardCreateRequest:
+      type: object
+      description: 게시글 생성 요청
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          description: 게시판 제목
+          example: "공지사항입니다"
+        content:
+          type: string
+          description: 게시판 내용
+          example: "게시글 내용입니다."
+
+    # 게시판 응답 스키마
+    BoardDetail:
+      type: object
+      description: 게시글 상세 응답
+      properties:
+        boardId:
+          type: integer
+          format: int64
+          description: 게시판 ID
+          example: 1
+        title:
+          type: string
+          description: 게시판 제목
+          example: "공지사항입니다"
+        content:
+          type: string
+          description: 게시판 내용
+          example: "게시글 내용입니다."
+        createId:
+          type: string
+          description: 생성자 아이디
+          example: "admin"
+        createDate:
+          type: string
+          format: date-time
+          description: 생성 시각
+          example: "2026-01-20T10:30:00.000Z"
+        updateId:
+          type: string
+          description: 수정자 아이디
+          example: "admin"
+        updateDate:
+          type: string
+          format: date-time
+          description: 수정 시각
+          example: "2026-01-20T10:30:00.000Z"

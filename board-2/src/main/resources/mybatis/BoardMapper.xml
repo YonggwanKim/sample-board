@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sample.board.repository.BoardMapper">
+
+    <!-- C -->
+    <insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="boardId" keyColumn="board_id">
+        INSERT INTO tb_board (
+            title, content, create_id, create_date, update_id, update_date, use_yn
+        ) VALUES (
+            #{title}, #{content}, #{createId}, #{createDate}, #{updateId}, #{updateDate}, #{useYN}
+        )
+    </insert>
+
+    <!-- R -->
+    <select id="findByBoardId" resultType="Board">
+        SELECT board_id, title, content, create_id, create_date, update_id, update_date, use_yn
+        FROM tb_board
+        WHERE board_id = #{boardId} AND use_yn = 'Y'
+    </select>
+
+</mapper>
